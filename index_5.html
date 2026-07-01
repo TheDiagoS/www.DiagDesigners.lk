@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TheDiagoDesigners — Creative Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black: #060706;
+    --black-soft: #0c0f0d;
+    --panel: #101412;
+    --panel-2: #141915;
+    --line: #22281f;
+    --white: #f4f6f2;
+    --white-dim: #b9c2b7;
+    --grey: #7b8579;
+    --green: #4dff8c;
+    --green-dim: #2fbf6d;
+    --green-deep: #0d3a20;
+    --radius-lg: 28px;
+    --radius-md: 18px;
+    --radius-sm: 12px;
+    --ease: cubic-bezier(.16,.84,.44,1);
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--black);
+    color:var(--white);
+    font-family:'Sora', sans-serif;
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  ::selection{background:var(--green);color:var(--black);}
+
+  /* scrollbar */
+  ::-webkit-scrollbar{width:8px;}
+  ::-webkit-scrollbar-track{background:var(--black);}
+  ::-webkit-scrollbar-thumb{background:var(--green-deep);border-radius:10px;}
+
+  .noise{
+    position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.035;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .grid-glow{
+    position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:
+      radial-gradient(ellipse 800px 500px at 15% -5%, rgba(77,255,140,.10), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 20%, rgba(77,255,140,.06), transparent 60%),
+      linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 64px 64px, 64px 64px;
+  }
+
+  section, header, footer{position:relative;z-index:2;}
+
+  a{color:inherit;text-decoration:none;}
+  ul{list-style:none;}
+  img{max-width:100%;display:block;}
+
+  .wrap{max-width:1240px;margin:0 auto;padding:0 32px;}
+
+  h1,h2,h3,h4{font-family:'Space Grotesk',sans-serif;letter-spacing:-0.02em;}
+
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--green);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:'';width:18px;height:1px;background:var(--green);
+  }
+
+  /* ===== NAV ===== */
+  header{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    background:rgba(6,7,6,.72);
+    backdrop-filter:blur(16px) saturate(140%);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 32px;max-width:1240px;margin:0 auto;
+  }
+  .brand{display:flex;align-items:center;gap:12px;}
+  .brand img{height:34px;width:auto;border-radius:6px;}
+  .brand-text{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;letter-spacing:-.01em;}
+  .brand-text span{color:var(--green);}
+
+  .nav-links{display:flex;gap:34px;align-items:center;}
+  .nav-links a{
+    font-size:14px;font-weight:500;color:var(--white-dim);
+    position:relative;padding:4px 0;transition:color .25s var(--ease);
+  }
+  .nav-links a:hover{color:var(--white);}
+  .nav-links a::after{
+    content:'';position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--green);
+    transition:width .3s var(--ease);
+  }
+  .nav-links a:hover::after{width:100%;}
+
+  .nav-cta{
+    display:flex;align-items:center;gap:8px;
+    background:var(--green);color:var(--black);
+    font-weight:600;font-size:13.5px;
+    padding:10px 20px;border-radius:100px;
+    transition:transform .25s var(--ease), box-shadow .25s var(--ease);
+  }
+  .nav-cta:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(77,255,140,.35);}
+
+  .burger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;z-index:110;}
+  .burger span{width:24px;height:2px;background:var(--white);border-radius:2px;transition:.3s;}
+
+  /* ===== HERO ===== */
+  .hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:140px 0 80px;
+    position:relative;
+  }
+  .hero-grid{
+    display:grid;grid-template-columns:1.15fr .85fr;gap:60px;align-items:center;
+  }
+  .hero-tag{margin-bottom:26px;}
+  .hero h1{
+    font-size:clamp(2.6rem, 5.4vw, 5.1rem);
+    line-height:1.02;
+    font-weight:700;
+    margin-bottom:26px;
+  }
+  .hero h1 em{
+    font-style:normal;
+    color:var(--green);
+    position:relative;
+  }
+  .hero-sub{
+    font-size:17px;color:var(--white-dim);max-width:520px;line-height:1.7;margin-bottom:40px;
+    font-weight:300;
+  }
+  .hero-actions{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:56px;}
+
+  .btn-primary{
+    background:var(--green);color:var(--black);font-weight:600;font-size:14.5px;
+    padding:16px 30px;border-radius:100px;display:inline-flex;align-items:center;gap:10px;
+    transition:transform .25s var(--ease), box-shadow .25s var(--ease);
+    border:1px solid var(--green);
+  }
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(77,255,140,.3);}
+
+  .btn-ghost{
+    background:transparent;color:var(--white);font-weight:600;font-size:14.5px;
+    padding:16px 30px;border-radius:100px;border:1px solid var(--line);
+    display:inline-flex;align-items:center;gap:10px;
+    transition:.25s var(--ease);
+  }
+  .btn-ghost:hover{border-color:var(--green);color:var(--green);}
+
+  .hero-stats{display:flex;gap:44px;flex-wrap:wrap;}
+  .stat-num{font-family:'Space Grotesk',sans-serif;font-size:2.1rem;font-weight:700;color:var(--white);}
+  .stat-num span{color:var(--green);}
+  .stat-label{font-size:12.5px;color:var(--grey);margin-top:4px;font-family:'JetBrains Mono',monospace;letter-spacing:.04em;}
+
+  .hero-visual{
+    position:relative;aspect-ratio:1/1.05;
+    border-radius:var(--radius-lg);
+    border:1px solid var(--line);
+    background:linear-gradient(155deg, var(--panel) 0%, var(--black-soft) 100%);
+    overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .hero-visual::before{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(circle at 30% 20%, rgba(77,255,140,.16), transparent 55%);
+  }
+  .hero-quote{
+    position:relative;padding:0 15%;text-align:center;
+    animation:float 6s ease-in-out infinite;
+  }
+  @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+  .hero-quote .mark{
+    font-family:'Playfair Display',serif;font-style:italic;font-size:3.2rem;
+    color:var(--green);line-height:1;display:block;margin-bottom:6px;opacity:.85;
+  }
+  .hero-quote blockquote{
+    font-family:'Playfair Display',serif;font-style:italic;font-weight:500;
+    font-size:1.5rem;line-height:1.4;color:var(--white);
+  }
+  .hero-quote cite{
+    display:block;margin-top:22px;font-style:normal;font-family:'JetBrains Mono',monospace;
+    font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey);
+  }
+  .hero-quote cite::before{content:'— ';color:var(--green);}
+
+  .visual-tag{
+    position:absolute;padding:9px 16px;background:rgba(6,7,6,.75);backdrop-filter:blur(10px);
+    border:1px solid var(--line);border-radius:100px;font-size:12px;font-family:'JetBrains Mono',monospace;
+    display:flex;align-items:center;gap:8px;color:var(--white-dim);
+  }
+  .visual-tag .dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);}
+  .tag-1{top:8%;left:8%;}
+  .tag-2{bottom:12%;right:8%;}
+  .tag-3{top:44%;right:6%;}
+
+  /* ===== marquee ===== */
+  .marquee-wrap{
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:22px 0;overflow:hidden;background:var(--black-soft);
+  }
+  .marquee{display:flex;gap:60px;white-space:nowrap;animation:scroll 28s linear infinite;width:max-content;}
+  .marquee span{
+    font-family:'Space Grotesk',sans-serif;font-size:15px;color:var(--grey);
+    display:flex;align-items:center;gap:60px;font-weight:500;letter-spacing:.02em;
+  }
+  .marquee span em{color:var(--green);font-style:normal;}
+  @keyframes scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+  /* ===== SECTION SHELL ===== */
+  section{padding:120px 0;}
+  .section-head{max-width:640px;margin-bottom:64px;}
+  .section-head h2{font-size:clamp(2rem,3.6vw,3rem);font-weight:700;line-height:1.1;margin-top:18px;}
+  .section-head p{color:var(--white-dim);font-size:16px;margin-top:16px;line-height:1.7;font-weight:300;}
+
+  /* ===== SERVICES ===== */
+  .services-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:20px;
+  }
+  .service-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-md);
+    padding:32px 26px;transition:.35s var(--ease);position:relative;overflow:hidden;
+  }
+  .service-card:hover{
+    border-color:var(--green-dim);transform:translateY(-6px);
+    box-shadow:0 20px 40px rgba(0,0,0,.4);
+  }
+  .service-card .icon{
+    width:46px;height:46px;border-radius:var(--radius-sm);
+    background:var(--green-deep);display:flex;align-items:center;justify-content:center;
+    margin-bottom:22px;color:var(--green);
+  }
+  .service-card h3{font-size:17px;font-weight:600;margin-bottom:10px;}
+  .service-card p{font-size:13.5px;color:var(--grey);line-height:1.6;font-weight:300;}
+
+  /* ===== TEAM ===== */
+  .team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .team-card{
+    background:linear-gradient(165deg, var(--panel) 0%, var(--black-soft) 100%);
+    border:1px solid var(--line);border-radius:var(--radius-lg);
+    padding:36px 30px;transition:.35s var(--ease);
+  }
+  .team-card:hover{border-color:var(--green-dim);transform:translateY(-6px);}
+  .team-avatar{
+    width:72px;height:72px;border-radius:50%;
+    background:linear-gradient(135deg, var(--green-dim), var(--green-deep));
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:26px;color:var(--black);
+    margin-bottom:24px;
+  }
+  .team-card h3{font-size:20px;font-weight:700;margin-bottom:4px;}
+  .team-role{font-size:12.5px;color:var(--green);font-family:'JetBrains Mono',monospace;letter-spacing:.05em;margin-bottom:16px;}
+  .team-bio{font-size:13.5px;color:var(--grey);line-height:1.65;margin-bottom:26px;font-weight:300;}
+  .team-contact{display:flex;gap:10px;}
+  .wa-btn{
+    flex:1;display:flex;align-items:center;justify-content:center;gap:8px;
+    padding:12px 14px;border-radius:100px;background:var(--white);color:var(--black);
+    font-size:13px;font-weight:600;transition:.25s var(--ease);
+  }
+  .wa-btn:hover{background:var(--green);transform:translateY(-2px);}
+  .call-btn{
+    width:44px;height:44px;border-radius:50%;border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;color:var(--white-dim);
+    transition:.25s var(--ease);flex-shrink:0;
+  }
+  .call-btn:hover{border-color:var(--green);color:var(--green);}
+
+  /* ===== PRICING ===== */
+  .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:stretch;}
+  .price-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-lg);
+    padding:38px 32px;display:flex;flex-direction:column;transition:.35s var(--ease);position:relative;
+  }
+  .price-card:hover{transform:translateY(-6px);}
+  .price-card.featured{
+    background:linear-gradient(165deg, #101a13 0%, var(--black-soft) 100%);
+    border:1px solid var(--green-dim);
+    box-shadow:0 0 0 1px rgba(77,255,140,.08), 0 30px 60px rgba(0,0,0,.5);
+  }
+  .featured-badge{
+    position:absolute;top:-13px;left:50%;transform:translateX(-50%);
+    background:var(--green);color:var(--black);font-size:11px;font-weight:700;
+    padding:6px 16px;border-radius:100px;font-family:'JetBrains Mono',monospace;letter-spacing:.05em;
+  }
+  .tier-name{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--grey);margin-bottom:14px;}
+  .price-card.featured .tier-name{color:var(--green);}
+  .price-amount{display:flex;align-items:baseline;gap:6px;margin-bottom:6px;}
+  .price-amount .curr{font-size:20px;color:var(--white-dim);font-weight:500;}
+  .price-amount .num{font-family:'Space Grotesk',sans-serif;font-size:3rem;font-weight:700;}
+  .price-note{font-size:13px;color:var(--grey);margin-bottom:30px;}
+  .price-feats{list-style:none;margin-bottom:34px;flex:1;}
+  .price-feats li{
+    display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--white-dim);
+    padding:10px 0;border-top:1px solid var(--line);font-weight:300;
+  }
+  .price-feats li:first-child{border-top:none;}
+  .price-feats li svg{flex-shrink:0;margin-top:3px;color:var(--green);}
+  .price-cta{
+    text-align:center;padding:15px;border-radius:100px;font-weight:600;font-size:14px;
+    background:transparent;border:1px solid var(--line);transition:.25s var(--ease);
+  }
+  .price-card.featured .price-cta{background:var(--green);color:var(--black);border-color:var(--green);}
+  .price-cta:hover{border-color:var(--green);color:var(--green);}
+  .price-card.featured .price-cta:hover{background:var(--white);border-color:var(--white);color:var(--black);}
+
+  /* invert-to-white effect: hover (desktop) and .is-inverted (click/tap, JS-driven) */
+  .price-card.is-inverted,
+  .price-card:hover{
+    background:#f4f6f2 !important;
+    border-color:#f4f6f2 !important;
+    box-shadow:0 20px 50px rgba(0,0,0,.5);
+  }
+  .price-card.is-inverted .tier-name,
+  .price-card:hover .tier-name,
+  .price-card.is-inverted .price-note,
+  .price-card:hover .price-note,
+  .price-card.is-inverted .price-amount .curr,
+  .price-card:hover .price-amount .curr{color:#4d5650 !important;}
+  .price-card.is-inverted .price-amount .num,
+  .price-card:hover .price-amount .num,
+  .price-card.is-inverted .price-feats li,
+  .price-card:hover .price-feats li{color:#0c0f0d !important;}
+  .price-card.is-inverted .price-feats li,
+  .price-card:hover .price-feats li{border-top-color:rgba(12,15,12,.14) !important;}
+  .price-card.is-inverted .price-feats li svg,
+  .price-card:hover .price-feats li svg{color:var(--green-dim) !important;}
+  .price-card.is-inverted .price-cta,
+  .price-card:hover .price-cta{
+    background:#0c0f0d !important;color:#f4f6f2 !important;border-color:#0c0f0d !important;
+  }
+  .price-card.is-inverted .price-cta:hover,
+  .price-card:hover .price-cta:hover{background:var(--green) !important;color:#0c0f0d !important;border-color:var(--green) !important;}
+  .price-card.featured.is-inverted,
+  .price-card.featured:hover{border-color:#f4f6f2 !important;}
+
+
+  /* ===== PORTFOLIO ===== */
+  .portfolio-tools{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:40px;gap:20px;flex-wrap:wrap;}
+  .upload-box{
+    border:1.5px dashed var(--line);border-radius:var(--radius-md);padding:20px 26px;
+    display:flex;align-items:center;gap:16px;cursor:pointer;transition:.25s var(--ease);
+    background:var(--panel);
+  }
+  .upload-box:hover{border-color:var(--green-dim);}
+  .upload-box svg{color:var(--green);flex-shrink:0;}
+  .upload-box .u-title{font-size:14px;font-weight:600;}
+  .upload-box .u-sub{font-size:12px;color:var(--grey);margin-top:2px;}
+  #fileInput{display:none;}
+
+  .portfolio-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:16px;
+  }
+  .portfolio-item{
+    aspect-ratio:1/1;border-radius:var(--radius-md);overflow:hidden;position:relative;
+    border:1px solid var(--line);background:var(--panel);
+  }
+  .portfolio-item img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease);}
+  .portfolio-item:hover img{transform:scale(1.08);}
+  .portfolio-item .p-overlay{
+    position:absolute;inset:0;background:linear-gradient(0deg, rgba(6,7,6,.85) 0%, transparent 45%);
+    display:flex;align-items:flex-end;padding:16px;opacity:0;transition:.3s var(--ease);
+  }
+  .portfolio-item:hover .p-overlay{opacity:1;}
+  .p-overlay span{font-size:12.5px;font-weight:600;color:var(--white);}
+  .portfolio-empty{
+    grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--grey);font-size:14px;
+    border:1px dashed var(--line);border-radius:var(--radius-md);
+  }
+  .remove-x{
+    position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;
+    background:rgba(6,7,6,.8);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;
+    color:var(--white);font-size:14px;opacity:0;transition:.25s var(--ease);z-index:2;
+  }
+  .portfolio-item:hover .remove-x{opacity:1;}
+  .remove-x:hover{background:var(--green);color:var(--black);border-color:var(--green);}
+
+  /* ===== ABOUT / STATS BAND ===== */
+  .about-band{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-lg);
+    padding:56px;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;
+  }
+  .about-band h3{font-size:1.9rem;font-weight:700;line-height:1.25;margin-bottom:18px;}
+  .about-band p{color:var(--white-dim);font-size:15px;line-height:1.75;font-weight:300;}
+  .about-mini-stats{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+  .mini-stat{padding:22px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--black-soft);}
+  .mini-stat .n{font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:700;color:var(--green);}
+  .mini-stat .l{font-size:12px;color:var(--grey);margin-top:6px;font-family:'JetBrains Mono',monospace;letter-spacing:.03em;}
+
+  /* ===== CONTACT / CTA ===== */
+  .cta-band{
+    text-align:center;background:linear-gradient(165deg, #0d1710 0%, var(--black-soft) 100%);
+    border:1px solid var(--green-dim);border-radius:var(--radius-lg);
+    padding:80px 40px;position:relative;overflow:hidden;
+  }
+  .cta-band::before{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(circle at 50% 0%, rgba(77,255,140,.14), transparent 60%);
+  }
+  .cta-band h2{font-size:clamp(2rem,4vw,3.2rem);font-weight:700;margin-bottom:18px;position:relative;}
+  .cta-band p{color:var(--white-dim);font-size:16px;margin-bottom:40px;max-width:520px;margin-left:auto;margin-right:auto;position:relative;font-weight:300;}
+  .cta-contacts{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;position:relative;}
+  .cta-contact-card{
+    background:rgba(16,20,18,.7);border:1px solid var(--line);border-radius:var(--radius-md);
+    padding:18px 24px;display:flex;align-items:center;gap:14px;transition:.25s var(--ease);backdrop-filter:blur(10px);
+  }
+  .cta-contact-card:hover{border-color:var(--green);transform:translateY(-3px);}
+  .cta-contact-card .cc-avatar{
+    width:38px;height:38px;border-radius:50%;background:var(--green-deep);color:var(--green);
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;font-family:'Space Grotesk',sans-serif;
+  }
+  .cc-name{font-size:13.5px;font-weight:600;text-align:left;}
+  .cc-num{font-size:11.5px;color:var(--grey);font-family:'JetBrains Mono',monospace;text-align:left;}
+
+  .cta-contact-card.main-line{
+    background:linear-gradient(155deg, rgba(77,255,140,.14), rgba(16,20,18,.7));
+    border-color:var(--green-dim);
+  }
+  .cta-contact-card.main-line:hover{box-shadow:0 10px 26px rgba(77,255,140,.18);}
+  .cta-contact-card .main-avatar{background:var(--green);color:var(--black);}
+  .cta-contact-card.main-line .cc-name{color:var(--green);}
+
+  /* ===== FOOTER ===== */
+  footer{border-top:1px solid var(--line);padding:64px 0 32px;background:var(--black-soft);}
+  .footer-top{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;margin-bottom:56px;}
+  .footer-brand img{height:34px;margin-bottom:18px;}
+  .footer-brand p{font-size:13.5px;color:var(--grey);line-height:1.7;max-width:280px;font-weight:300;}
+  .footer-col h4{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--white);margin-bottom:20px;font-family:'JetBrains Mono',monospace;}
+  .footer-col a{display:block;font-size:14px;color:var(--grey);margin-bottom:12px;transition:.2s;}
+  .footer-col a:hover{color:var(--green);}
+  .footer-bottom{
+    display:flex;justify-content:space-between;align-items:center;padding-top:28px;
+    border-top:1px solid var(--line);font-size:12.5px;color:var(--grey);flex-wrap:wrap;gap:12px;
+  }
+  .footer-social{display:flex;gap:14px;}
+  .footer-social a{
+    width:36px;height:36px;border-radius:50%;border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;transition:.25s var(--ease);color:var(--white-dim);
+  }
+  .footer-social a:hover{border-color:var(--green);color:var(--green);}
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 980px){
+    .hero-grid{grid-template-columns:1fr;}
+    .hero-visual{max-width:420px;margin:0 auto;}
+    .services-grid{grid-template-columns:repeat(2,1fr);}
+    .team-grid{grid-template-columns:1fr;}
+    .pricing-grid{grid-template-columns:1fr;}
+    .about-band{grid-template-columns:1fr;padding:36px;}
+    .footer-top{grid-template-columns:1fr 1fr;}
+    .portfolio-grid{grid-template-columns:repeat(2,1fr);}
+  }
+  @media (max-width: 680px){
+    .nav-links{display:none;}
+    .burger{display:flex;}
+    .nav-cta{display:none;}
+    .wrap{padding:0 20px;}
+    section{padding:80px 0;}
+    .services-grid{grid-template-columns:1fr;}
+    .footer-top{grid-template-columns:1fr;gap:32px;}
+    .about-mini-stats{grid-template-columns:1fr 1fr;}
+    .cta-band{padding:56px 22px;}
+    .portfolio-grid{grid-template-columns:1fr 1fr;}
+  }
+
+  /* ===== SCROLL REVEAL ===== */
+  [data-reveal]{
+    opacity:0;transform:translateY(28px);
+    transition:opacity .8s var(--ease), transform .8s var(--ease);
+  }
+  [data-reveal].is-visible{opacity:1;transform:translateY(0);}
+  [data-reveal="stagger"] > *{
+    opacity:0;transform:translateY(24px);
+    transition:opacity .7s var(--ease), transform .7s var(--ease);
+  }
+  [data-reveal="stagger"].is-visible > *{opacity:1;transform:translateY(0);}
+  [data-reveal="stagger"].is-visible > *:nth-child(1){transition-delay:.02s;}
+  [data-reveal="stagger"].is-visible > *:nth-child(2){transition-delay:.08s;}
+  [data-reveal="stagger"].is-visible > *:nth-child(3){transition-delay:.14s;}
+  [data-reveal="stagger"].is-visible > *:nth-child(4){transition-delay:.2s;}
+  [data-reveal="stagger"].is-visible > *:nth-child(5){transition-delay:.26s;}
+  [data-reveal="stagger"].is-visible > *:nth-child(6){transition-delay:.32s;}
+  [data-reveal="stagger"].is-visible > *:nth-child(7){transition-delay:.38s;}
+  [data-reveal="stagger"].is-visible > *:nth-child(8){transition-delay:.44s;}
+  [data-reveal="stagger"].is-visible > *:nth-child(9){transition-delay:.5s;}
+  [data-reveal="stagger"].is-visible > *:nth-child(10){transition-delay:.56s;}
+  @media (prefers-reduced-motion: reduce){
+    [data-reveal],[data-reveal="stagger"] > *{opacity:1;transform:none;transition:none;}
+  }
+
+  /* smoother card lift, applied on top of existing hover rules */
+  .service-card, .team-card, .price-card, .toolkit-badge, .cat-row{
+    transition:transform .45s var(--ease), border-color .45s var(--ease), box-shadow .45s var(--ease), background .45s var(--ease);
+  }
+
+  /* ===== TOOLKIT (Adobe + Blender) ===== */
+  .toolkit-band{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-lg);
+    padding:56px;position:relative;overflow:hidden;
+  }
+  .toolkit-band::before{
+    content:'';position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(ellipse 600px 300px at 90% 0%, rgba(77,255,140,.08), transparent 60%);
+  }
+  .toolkit-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:44px;flex-wrap:wrap;position:relative;}
+  .toolkit-head h3{font-size:1.7rem;font-weight:700;margin-top:14px;}
+  .toolkit-head p{color:var(--white-dim);font-size:14.5px;margin-top:10px;max-width:440px;line-height:1.65;font-weight:300;}
+  .toolkit-note{
+    font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--grey);
+    text-align:right;line-height:1.6;letter-spacing:.02em;
+  }
+
+  .toolkit-grid{
+    display:grid;grid-template-columns:repeat(5,1fr);gap:14px;position:relative;
+  }
+  .toolkit-badge{
+    background:var(--black-soft);border:1px solid var(--line);border-radius:var(--radius-sm);
+    padding:22px 16px 18px;display:flex;flex-direction:column;align-items:center;gap:12px;
+    text-align:center;cursor:default;
+  }
+  .toolkit-badge:hover{
+    transform:translateY(-6px) scale(1.03);
+    border-color:rgba(255,255,255,.18);
+    box-shadow:0 16px 32px rgba(0,0,0,.45);
+  }
+  .toolkit-icon{
+    width:52px;height:52px;border-radius:13px;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;color:#fff;
+    box-shadow:0 6px 16px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.15);
+    transition:transform .45s var(--ease);
+  }
+  .toolkit-badge:hover .toolkit-icon{transform:rotate(-4deg) scale(1.06);}
+  .toolkit-app{font-size:12.5px;font-weight:600;color:var(--white);}
+  .toolkit-role{font-size:10.5px;color:var(--grey);font-family:'JetBrains Mono',monospace;letter-spacing:.02em;}
+
+  .toolkit-divider{
+    display:flex;align-items:center;gap:16px;margin:32px 0;color:var(--grey);
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  }
+  .toolkit-divider::before,.toolkit-divider::after{content:'';flex:1;height:1px;background:var(--line);}
+
+  .toolkit-blender{
+    display:flex;align-items:center;gap:20px;background:var(--black-soft);
+    border:1px solid var(--line);border-radius:var(--radius-sm);padding:20px 24px;max-width:420px;
+  }
+  .toolkit-blender:hover{border-color:rgba(234,118,0,.5);}
+  .toolkit-blender .toolkit-icon{width:52px;height:52px;flex-shrink:0;}
+  .toolkit-blender-text .toolkit-app{font-size:14px;}
+  .toolkit-blender-text p{font-size:12px;color:var(--grey);margin-top:3px;font-weight:300;}
+
+  @media (max-width:980px){
+    .toolkit-grid{grid-template-columns:repeat(3,1fr);}
+  }
+  @media (max-width:680px){
+    .toolkit-band{padding:32px 24px;}
+    .toolkit-grid{grid-template-columns:repeat(2,1fr);}
+    .toolkit-note{text-align:left;}
+  }
+
+  /* ===== EDITING CATEGORIES ===== */
+  .cat-list{display:flex;flex-direction:column;border-top:1px solid var(--line);}
+  .cat-row{
+    display:grid;grid-template-columns:70px 1fr auto;align-items:center;gap:28px;
+    padding:26px 4px;border-bottom:1px solid var(--line);position:relative;overflow:hidden;
+  }
+  .cat-row::before{
+    content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:#f4f6f2;
+    transition:width .5s var(--ease);z-index:0;
+  }
+  .cat-row:hover::before,
+  .cat-row.is-inverted::before{width:100%;}
+  .cat-row:hover,
+  .cat-row.is-inverted{padding-left:20px;}
+  .cat-index{
+    font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--grey);position:relative;z-index:1;
+    transition:color .4s var(--ease);
+  }
+  .cat-row:hover .cat-index,
+  .cat-row.is-inverted .cat-index{color:var(--green-dim);}
+  .cat-main{position:relative;z-index:1;}
+  .cat-main h4{font-size:19px;font-weight:600;font-family:'Space Grotesk',sans-serif;margin-bottom:6px;transition:transform .4s var(--ease), color .4s var(--ease);}
+  .cat-row:hover .cat-main h4,
+  .cat-row.is-inverted .cat-main h4{transform:translateX(6px);color:#0c0f0d;}
+  .cat-main p{font-size:13.5px;color:var(--grey);font-weight:300;line-height:1.6;max-width:520px;transition:color .4s var(--ease);}
+  .cat-row:hover .cat-main p,
+  .cat-row.is-inverted .cat-main p{color:#33392f;}
+  .cat-tags{display:flex;gap:8px;flex-wrap:wrap;position:relative;z-index:1;justify-content:flex-end;max-width:260px;}
+  .cat-tag{
+    font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--white-dim);
+    border:1px solid var(--line);padding:5px 10px;border-radius:100px;white-space:nowrap;
+    transition:border-color .4s var(--ease), color .4s var(--ease);
+  }
+  .cat-row:hover .cat-tag,
+  .cat-row.is-inverted .cat-tag{border-color:rgba(12,15,12,.25);color:#0c0f0d;background:rgba(255,255,255,.5);}
+  @media (max-width:780px){
+    .cat-row{grid-template-columns:36px 1fr;grid-template-rows:auto auto;gap:6px 16px;padding:22px 4px;}
+    .cat-tags{grid-column:2;justify-content:flex-start;max-width:none;}
+  }
+
+  /* mobile nav overlay */
+  .mobile-nav{
+    position:fixed;inset:0;background:var(--black);z-index:105;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:30px;
+    transform:translateY(-100%);transition:transform .4s var(--ease);
+  }
+  .mobile-nav.open{transform:translateY(0);}
+  .mobile-nav a{font-size:24px;font-family:'Space Grotesk',sans-serif;font-weight:600;}
+</style>
+</head>
+<body>
+
+<div class="noise"></div>
+<div class="grid-glow"></div>
+
+<header>
+  <nav class="nav">
+    <a href="#top" class="brand">
+      <img src="images/diago-mark.jpeg" alt="Diago Designers mark">
+      <div class="brand-text">DIAGO<span> DESIGNERS</span></div>
+    </a>
+    <div class="nav-links">
+      <a href="#services">Services</a>
+      <a href="#toolkit">Toolkit</a>
+      <a href="#categories">Editing</a>
+      <a href="#team">Team</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#portfolio">Portfolio</a>
+      <a href="#about">About</a>
+    </div>
+    <a href="#contact" class="nav-cta">Hire us →</a>
+    <button class="burger" id="burger"><span></span><span></span><span></span></button>
+  </nav>
+</header>
+
+<div class="mobile-nav" id="mobileNav">
+  <a href="#services">Services</a>
+  <a href="#toolkit">Toolkit</a>
+  <a href="#categories">Editing</a>
+  <a href="#team">Team</a>
+  <a href="#pricing">Pricing</a>
+  <a href="#portfolio">Portfolio</a>
+  <a href="#about">About</a>
+  <a href="#contact" style="color:var(--green);">Hire us →</a>
+</div>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow hero-tag">CREATIVE STUDIO · COLOMBO, SRI LANKA</div>
+        <h1>Design that<br>ships. Motion<br>that <em>moves.</em></h1>
+        <p class="hero-sub">Three specialists, one Adobe-powered pipeline. We build logos, edit video, design graphics and websites, and keep your Microsoft 365 workflow clean — all under one roof, for four years running.</p>
+        <div class="hero-actions">
+          <a href="#pricing" class="btn-primary">
+            View packages
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a href="#contact" class="btn-ghost">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 6.3C16.1 4.8 14.1 4 12 4 7.6 4 4 7.6 4 12c0 1.4.4 2.8 1.1 4L4 20l4.1-1.1c1.2.6 2.5 1 3.9 1 4.4 0 8-3.6 8-8 0-2.1-.8-4.1-2.4-5.6zM12 18.5c-1.2 0-2.4-.3-3.4-.9l-.2-.1-2.5.7.7-2.4-.2-.3C5.8 14.4 5.5 13.2 5.5 12c0-3.6 2.9-6.5 6.5-6.5 1.7 0 3.4.7 4.6 1.9 1.2 1.2 1.9 2.9 1.9 4.6 0 3.6-3 6.5-6.5 6.5z"/></svg>
+            Message on WhatsApp
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div><div class="stat-num">4<span>+</span></div><div class="stat-label">YEARS EXPERIENCE</div></div>
+          <div><div class="stat-num"><span>3</span></div><div class="stat-label">SPECIALISTS</div></div>
+          <div><div class="stat-num">9<span>+</span></div><div class="stat-label">SERVICES OFFERED</div></div>
+          <div><div class="stat-num">100<span>%</span></div><div class="stat-label">ADOBE WORKFLOW</div></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-quote">
+          <span class="mark">&#8220;</span>
+          <blockquote>Editing isn't the icing on the cake. It's half the cake.</blockquote>
+          <cite>The Studio Philosophy</cite>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="marquee-wrap">
+    <div class="marquee">
+      <span>VIDEO EDITING <em>—</em> GRAPHIC DESIGN <em>—</em> WEB DESIGN <em>—</em> MICROSOFT 365 <em>—</em> PHOTOGRAPHY <em>—</em> VIDEOGRAPHY <em>—</em> WEB DEVELOPMENT <em>—</em> MOTION DESIGN <em>—</em> LOGO DESIGN <em>—</em> 3D &amp; BLENDER <em>—</em></span>
+      <span>VIDEO EDITING <em>—</em> GRAPHIC DESIGN <em>—</em> WEB DESIGN <em>—</em> MICROSOFT 365 <em>—</em> PHOTOGRAPHY <em>—</em> VIDEOGRAPHY <em>—</em> WEB DEVELOPMENT <em>—</em> MOTION DESIGN <em>—</em> LOGO DESIGN <em>—</em> 3D &amp; BLENDER <em>—</em></span>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <section id="services" class="wrap">
+    <div class="section-head" data-reveal>
+      <div class="eyebrow">WHAT WE DO</div>
+      <h2>Nine crafts. One studio.</h2>
+      <p>Every service below runs through the same Adobe pipeline our three founders have sharpened over four years of client work.</p>
+    </div>
+    <div class="services-grid" data-reveal="stagger">
+
+      <div class="service-card">
+        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+        <h3>Video Editing</h3>
+        <p>Cuts, color grading, sound design and pacing built in Premiere Pro for social, brand and long-form content.</p>
+      </div>
+
+      <div class="service-card">
+        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="19" cy="17" r="2.5"/><circle cx="6" cy="17" r="2.5"/><path d="M13.5 9v3.5M11.5 14.5L8 16.5M15.5 14.5l3.5 2"/></svg></div>
+        <h3>Graphic Designing</h3>
+        <p>Social kits, print layouts and brand collateral designed in Illustrator and Photoshop with a clean visual system.</p>
+      </div>
+
+      <div class="service-card">
+        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 20h8M12 18v2"/></svg></div>
+        <h3>Web Designing</h3>
+        <p>Interfaces and mockups in Photoshop and Illustrator translated into pixel-precise layouts before a line of code.</p>
+      </div>
+
+      <div class="service-card">
+        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+        <h3>Microsoft 365 Work</h3>
+        <p>Word, Excel, PowerPoint and Outlook documents formatted, automated and delivered on-brand and on-deadline.</p>
+      </div>
+
+      <div class="service-card">
+        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+        <h3>Photography</h3>
+        <p>Product, portrait and event shoots retouched in Lightroom and Photoshop for a consistent editorial finish.</p>
+      </div>
+
+      <div class="service-card">
+        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 10l4.55-2.68A1 1 0 0121 8.15v7.7a1 1 0 01-1.45.83L15 14"/><rect x="1" y="6" width="14" height="12" rx="2"/></svg></div>
+        <h3>Videography</h3>
+        <p>On-location filming with a full shot list, lighting plan and gear built for brand, event and product content.</p>
+      </div>
+
+      <div class="service-card">
+        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></div>
+        <h3>Web Developing</h3>
+        <p>Fast, responsive builds that turn approved designs into live, working sites — clean code, no bloat.</p>
+      </div>
+
+      <div class="service-card">
+        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg></div>
+        <h3>Motion Designing</h3>
+        <p>Kinetic type, animated logos and UI motion crafted in After Effects to bring static brands to life.</p>
+      </div>
+
+      <div class="service-card">
+        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg></div>
+        <h3>Logo Designing</h3>
+        <p>Distinct marks built from scratch in Illustrator — concepted, refined and delivered in every format you need.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- TOOLKIT -->
+  <section id="toolkit" class="wrap">
+    <div class="toolkit-band" data-reveal>
+      <div class="toolkit-head">
+        <div>
+          <div class="eyebrow">THE TOOLKIT</div>
+          <h3>Every project runs on the full Adobe suite.</h3>
+          <p>No shortcuts, no watered-down alternatives — each craft is matched to the Adobe app built for it, plus Blender when a project calls for 3D.</p>
+        </div>
+        <div class="toolkit-note">10 APPLICATIONS<br>1 UNIFIED PIPELINE</div>
+      </div>
+
+      <div class="toolkit-grid" data-reveal="stagger">
+        <div class="toolkit-badge">
+          <div class="toolkit-icon" style="background:linear-gradient(160deg,#34364e,#001e36);">Ps</div>
+          <div class="toolkit-app">Photoshop</div>
+          <div class="toolkit-role">Retouching</div>
+        </div>
+        <div class="toolkit-badge">
+          <div class="toolkit-icon" style="background:linear-gradient(160deg,#3d2b00,#ff9a00);">Ai</div>
+          <div class="toolkit-app">Illustrator</div>
+          <div class="toolkit-role">Logo &amp; vector</div>
+        </div>
+        <div class="toolkit-badge">
+          <div class="toolkit-icon" style="background:linear-gradient(160deg,#00005b,#00c8ff);">Pr</div>
+          <div class="toolkit-app">Premiere Pro</div>
+          <div class="toolkit-role">Video editing</div>
+        </div>
+        <div class="toolkit-badge">
+          <div class="toolkit-icon" style="background:linear-gradient(160deg,#00005b,#9999ff);">Ae</div>
+          <div class="toolkit-app">After Effects</div>
+          <div class="toolkit-role">Motion design</div>
+        </div>
+        <div class="toolkit-badge">
+          <div class="toolkit-icon" style="background:linear-gradient(160deg,#4b0d0d,#ff3366);">Id</div>
+          <div class="toolkit-app">InDesign</div>
+          <div class="toolkit-role">Print layout</div>
+        </div>
+        <div class="toolkit-badge">
+          <div class="toolkit-icon" style="background:linear-gradient(160deg,#3d0a52,#f21c96);">Xd</div>
+          <div class="toolkit-app">XD</div>
+          <div class="toolkit-role">Web mockups</div>
+        </div>
+        <div class="toolkit-badge">
+          <div class="toolkit-icon" style="background:linear-gradient(160deg,#001c3d,#0091ff);">Lr</div>
+          <div class="toolkit-app">Lightroom</div>
+          <div class="toolkit-role">Photo grading</div>
+        </div>
+        <div class="toolkit-badge">
+          <div class="toolkit-icon" style="background:linear-gradient(160deg,#4d0d1f,#9999ff);">Au</div>
+          <div class="toolkit-app">Audition</div>
+          <div class="toolkit-role">Sound design</div>
+        </div>
+        <div class="toolkit-badge">
+          <div class="toolkit-icon" style="background:linear-gradient(160deg,#3d1c00,#c92e00);">Me</div>
+          <div class="toolkit-app">Media Encoder</div>
+          <div class="toolkit-role">Delivery formats</div>
+        </div>
+        <div class="toolkit-badge">
+          <div class="toolkit-icon" style="background:linear-gradient(160deg,#5c1400,#f5c518);">Pf</div>
+          <div class="toolkit-app">Portfolio</div>
+          <div class="toolkit-role">Client showcase</div>
+        </div>
+      </div>
+
+      <div class="toolkit-divider">plus, for 3D</div>
+
+      <div class="toolkit-blender" data-reveal>
+        <svg class="toolkit-icon" width="52" height="52" viewBox="0 0 52 52" style="border-radius:0;box-shadow:none;">
+          <circle cx="26" cy="26" r="25" fill="#0c0f0d" stroke="var(--line)"/>
+          <path d="M26 12c-6 0-9.5 3.2-9.5 7.4 0 2.6 1.5 4.6 3.7 5.8-3.4 1-6.1 3.6-6.1 7.3 0 5 4.6 8 10.9 8 5.6 0 9.7-2.4 11.5-6.1l-4.4-1.9c-1.1 2.3-3.5 3.7-6.6 3.7-3.6 0-5.9-1.7-5.9-4.1 0-2.5 2.6-4 6.4-4h3v-4.3h-2.7c-3 0-5-1.2-5-3.2 0-1.9 1.9-3.2 4.7-3.2 2.8 0 5.1 1.2 6 3.5l4.4-2C38.2 14.3 33.2 12 26 12z" fill="#ea7600"/>
+        </svg>
+        <div class="toolkit-blender-text">
+          <div class="toolkit-app">Blender</div>
+          <p>3D modeling, product renders &amp; motion graphics on request.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EDITING CATEGORIES -->
+  <section id="categories" class="wrap">
+    <div class="section-head" data-reveal>
+      <div class="eyebrow">EDITING CATEGORIES</div>
+      <h2>Not just "video editing." Specific craft, specific tools.</h2>
+      <p>Every category below is a distinct skill our founders have logged real hours in — not a generic catch-all service.</p>
+    </div>
+
+    <div class="cat-list" data-reveal="stagger">
+      <div class="cat-row">
+        <div class="cat-index">01</div>
+        <div class="cat-main">
+          <h4>Narrative &amp; social cuts</h4>
+          <p>Story-driven edits for reels, YouTube and brand video — pacing, cuts and captions built for retention.</p>
+        </div>
+        <div class="cat-tags"><span class="cat-tag">Premiere Pro</span><span class="cat-tag">Media Encoder</span></div>
+      </div>
+      <div class="cat-row">
+        <div class="cat-index">02</div>
+        <div class="cat-main">
+          <h4>Color grading</h4>
+          <p>Consistent, mood-matched color across every shot, from raw log footage to a graded final export.</p>
+        </div>
+        <div class="cat-tags"><span class="cat-tag">Premiere Pro</span><span class="cat-tag">Lightroom</span></div>
+      </div>
+      <div class="cat-row">
+        <div class="cat-index">03</div>
+        <div class="cat-main">
+          <h4>Sound design &amp; mixing</h4>
+          <p>Clean dialogue, SFX layering and level balancing so audio never fights for attention with the visuals.</p>
+        </div>
+        <div class="cat-tags"><span class="cat-tag">Audition</span></div>
+      </div>
+      <div class="cat-row">
+        <div class="cat-index">04</div>
+        <div class="cat-main">
+          <h4>Motion &amp; kinetic type</h4>
+          <p>Animated logos, lower-thirds and kinetic typography that turn static brand assets into movement.</p>
+        </div>
+        <div class="cat-tags"><span class="cat-tag">After Effects</span><span class="cat-tag">Blender</span></div>
+      </div>
+      <div class="cat-row">
+        <div class="cat-index">05</div>
+        <div class="cat-main">
+          <h4>Logo &amp; identity</h4>
+          <p>Concept sketches through vector-final logo systems, built to hold up from favicon to billboard.</p>
+        </div>
+        <div class="cat-tags"><span class="cat-tag">Illustrator</span></div>
+      </div>
+      <div class="cat-row">
+        <div class="cat-index">06</div>
+        <div class="cat-main">
+          <h4>Photo retouching</h4>
+          <p>Product, portrait and event photography cleaned up and graded to a consistent editorial finish.</p>
+        </div>
+        <div class="cat-tags"><span class="cat-tag">Photoshop</span><span class="cat-tag">Lightroom</span></div>
+      </div>
+      <div class="cat-row">
+        <div class="cat-index">07</div>
+        <div class="cat-main">
+          <h4>Print &amp; layout design</h4>
+          <p>Brochures, menus and multi-page documents laid out with real typographic and grid discipline.</p>
+        </div>
+        <div class="cat-tags"><span class="cat-tag">InDesign</span></div>
+      </div>
+      <div class="cat-row">
+        <div class="cat-index">08</div>
+        <div class="cat-main">
+          <h4>UI/UX &amp; web mockups</h4>
+          <p>Wireframes to pixel-precise mockups, handed off clean and ready for direct development.</p>
+        </div>
+        <div class="cat-tags"><span class="cat-tag">XD</span><span class="cat-tag">Illustrator</span></div>
+      </div>
+      <div class="cat-row">
+        <div class="cat-index">09</div>
+        <div class="cat-main">
+          <h4>3D &amp; product renders</h4>
+          <p>Modeled and rendered product shots or brand assets for when a flat design isn't enough.</p>
+        </div>
+        <div class="cat-tags"><span class="cat-tag">Blender</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section id="team" class="wrap">
+    <div class="section-head" data-reveal>
+      <div class="eyebrow">THE FOUNDERS</div>
+      <h2>Three specialists. Direct contact.</h2>
+      <p>No account managers, no middlemen — message the person who'll actually work on your project.</p>
+    </div>
+    <div class="team-grid" data-reveal="stagger">
+
+      <div class="team-card">
+        <div class="team-avatar">Y</div>
+        <h3>Yashod</h3>
+        <div class="team-role">FOUNDER · LEAD DESIGNER</div>
+        <p class="team-bio">Four years deep in logo and graphic design, leading brand identity work across the studio's client roster.</p>
+        <div class="team-contact">
+          <a class="wa-btn" href="https://wa.me/94765276196" target="_blank" rel="noopener">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 6.3C16.1 4.8 14.1 4 12 4 7.6 4 4 7.6 4 12c0 1.4.4 2.8 1.1 4L4 20l4.1-1.1c1.2.6 2.5 1 3.9 1 4.4 0 8-3.6 8-8 0-2.1-.8-4.1-2.4-5.6zM12 18.5c-1.2 0-2.4-.3-3.4-.9l-.2-.1-2.5.7.7-2.4-.2-.3C5.8 14.4 5.5 13.2 5.5 12c0-3.6 2.9-6.5 6.5-6.5 1.7 0 3.4.7 4.6 1.9 1.2 1.2 1.9 2.9 1.9 4.6 0 3.6-3 6.5-6.5 6.5z"/></svg>
+            WhatsApp
+          </a>
+          <a class="call-btn" href="tel:+94765276196" aria-label="Call Yashod">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .3 2 .6 2.9a2 2 0 01-.5 2.1L8 9.9a16 16 0 006 6l1.3-1.2a2 2 0 012.1-.5c.9.3 1.9.5 2.9.6a2 2 0 011.7 2.1z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="team-card">
+        <div class="team-avatar">Y</div>
+        <h3>Yumeth</h3>
+        <div class="team-role">FOUNDER · VIDEO &amp; MOTION</div>
+        <p class="team-bio">Handles editing, motion design and videography — bringing footage to life with pacing, color and sound.</p>
+        <div class="team-contact">
+          <a class="wa-btn" href="https://wa.me/94773530502" target="_blank" rel="noopener">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 6.3C16.1 4.8 14.1 4 12 4 7.6 4 4 7.6 4 12c0 1.4.4 2.8 1.1 4L4 20l4.1-1.1c1.2.6 2.5 1 3.9 1 4.4 0 8-3.6 8-8 0-2.1-.8-4.1-2.4-5.6zM12 18.5c-1.2 0-2.4-.3-3.4-.9l-.2-.1-2.5.7.7-2.4-.2-.3C5.8 14.4 5.5 13.2 5.5 12c0-3.6 2.9-6.5 6.5-6.5 1.7 0 3.4.7 4.6 1.9 1.2 1.2 1.9 2.9 1.9 4.6 0 3.6-3 6.5-6.5 6.5z"/></svg>
+            WhatsApp
+          </a>
+          <a class="call-btn" href="tel:+94773530502" aria-label="Call Yumeth">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .3 2 .6 2.9a2 2 0 01-.5 2.1L8 9.9a16 16 0 006 6l1.3-1.2a2 2 0 012.1-.5c.9.3 1.9.5 2.9.6a2 2 0 011.7 2.1z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="team-card">
+        <div class="team-avatar">R</div>
+        <h3>Ranod</h3>
+        <div class="team-role">FOUNDER · WEB &amp; DEV</div>
+        <p class="team-bio">Leads web design and development along with Microsoft 365 delivery — from mockup to live, working site.</p>
+        <div class="team-contact">
+          <a class="wa-btn" href="https://wa.me/94776203314" target="_blank" rel="noopener">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 6.3C16.1 4.8 14.1 4 12 4 7.6 4 4 7.6 4 12c0 1.4.4 2.8 1.1 4L4 20l4.1-1.1c1.2.6 2.5 1 3.9 1 4.4 0 8-3.6 8-8 0-2.1-.8-4.1-2.4-5.6zM12 18.5c-1.2 0-2.4-.3-3.4-.9l-.2-.1-2.5.7.7-2.4-.2-.3C5.8 14.4 5.5 13.2 5.5 12c0-3.6 2.9-6.5 6.5-6.5 1.7 0 3.4.7 4.6 1.9 1.2 1.2 1.9 2.9 1.9 4.6 0 3.6-3 6.5-6.5 6.5z"/></svg>
+            WhatsApp
+          </a>
+          <a class="call-btn" href="tel:+94776203314" aria-label="Call Ranod">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .3 2 .6 2.9a2 2 0 01-.5 2.1L8 9.9a16 16 0 006 6l1.3-1.2a2 2 0 012.1-.5c.9.3 1.9.5 2.9.6a2 2 0 011.7 2.1z"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing" class="wrap">
+    <div class="section-head" data-reveal>
+      <div class="eyebrow">PACKAGES</div>
+      <h2>Simple pricing, no surprises.</h2>
+      <p>Pick the tier that matches your project. Every package is delivered through the same Adobe-powered workflow.</p>
+    </div>
+    <div class="pricing-grid" data-reveal="stagger">
+
+      <div class="price-card">
+        <div class="tier-name">Bronze</div>
+        <div class="price-amount"><span class="curr">$</span><span class="num">29.99</span></div>
+        <div class="price-note">Simple / standard delivery</div>
+        <ul class="price-feats">
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>Logo designing (simple)</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>Graphics designing (simple)</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>Video editing (simple)</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>Microsoft 365 work (simple)</li>
+        </ul>
+        <a href="https://wa.me/94716079550?text=Hi%2C%20I'm%20interested%20in%20the%20Bronze%20package%20(%2429.99)." target="_blank" rel="noopener" class="price-cta">Get Bronze</a>
+      </div>
+
+      <div class="price-card featured">
+        <div class="featured-badge">MOST POPULAR</div>
+        <div class="tier-name">Silver</div>
+        <div class="price-amount"><span class="curr">$</span><span class="num">49.99</span></div>
+        <div class="price-note">Professional-grade delivery</div>
+        <ul class="price-feats">
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>Professional logo designing</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>Professional video editing</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>Professional graphics designing</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>Microsoft 365 work</li>
+        </ul>
+        <a href="https://wa.me/94716079550?text=Hi%2C%20I'm%20interested%20in%20the%20Silver%20package%20(%2449.99)." target="_blank" rel="noopener" class="price-cta">Get Silver</a>
+      </div>
+
+      <div class="price-card">
+        <div class="tier-name">Gold</div>
+        <div class="price-amount"><span class="curr">$</span><span class="num">89.99</span></div>
+        <div class="price-note">First-class, full-service tier</div>
+        <ul class="price-feats">
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>First-class logo designing</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>First-class graphics designing</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>First-class video editing</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>Motion design</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>Photography &amp; videography</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>Web design &amp; development</li>
+        </ul>
+        <a href="https://wa.me/94716079550?text=Hi%2C%20I'm%20interested%20in%20the%20Gold%20package%20(%2489.99)." target="_blank" rel="noopener" class="price-cta">Get Gold</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PORTFOLIO -->
+  <section id="portfolio" class="wrap">
+    <div class="portfolio-tools" data-reveal>
+      <div class="section-head" style="margin-bottom:0;">
+        <div class="eyebrow">SELECTED WORK</div>
+        <h2>Portfolio</h2>
+        <p>Upload finished work to showcase it here. Files stay in this browser session.</p>
+      </div>
+      <label class="upload-box" for="fileInput">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+        <div>
+          <div class="u-title">Upload portfolio piece</div>
+          <div class="u-sub">PNG, JPG, or GIF — click to browse</div>
+        </div>
+        <input type="file" id="fileInput" accept="image/*" multiple>
+      </label>
+    </div>
+    <div class="portfolio-grid" id="portfolioGrid">
+      <div class="portfolio-empty" id="portfolioEmpty">No work uploaded yet — add your first piece above.</div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="wrap">
+    <div class="about-band" data-reveal>
+      <div>
+        <div class="eyebrow">ABOUT THE STUDIO</div>
+        <h3 style="margin-top:18px;">Four years, one Adobe-powered pipeline, three founders.</h3>
+        <p>TheDiagoDesigners is run by Ranod, Yumeth and Yashod — three designers and editors with four years of hands-on experience across logo design, video editing, graphic design, motion design, photography, videography, web design, web development and Microsoft 365 work. Every project runs through the full Adobe Creative Cloud suite, kept consistent from first draft to final delivery.</p>
+      </div>
+      <div class="about-mini-stats">
+        <div class="mini-stat"><div class="n">4+</div><div class="l">YEARS EXPERIENCE</div></div>
+        <div class="mini-stat"><div class="n">Adobe</div><div class="l">FULL CREATIVE SUITE</div></div>
+        <div class="mini-stat"><div class="n">3</div><div class="l">FOUNDING SPECIALISTS</div></div>
+        <div class="mini-stat"><div class="n">9</div><div class="l">SERVICES COVERED</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="wrap">
+    <div class="cta-band" data-reveal>
+      <div class="eyebrow" style="justify-content:center;">GET IN TOUCH</div>
+      <h2 style="margin-top:18px;">Ready to hire the studio?</h2>
+      <p>Message any founder directly on WhatsApp, or call — whichever's faster for you.</p>
+      <div class="cta-contacts">
+        <a class="cta-contact-card main-line" href="https://wa.me/94716079550" target="_blank" rel="noopener">
+          <div class="cc-avatar main-avatar"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 6.3C16.1 4.8 14.1 4 12 4 7.6 4 4 7.6 4 12c0 1.4.4 2.8 1.1 4L4 20l4.1-1.1c1.2.6 2.5 1 3.9 1 4.4 0 8-3.6 8-8 0-2.1-.8-4.1-2.4-5.6zM12 18.5c-1.2 0-2.4-.3-3.4-.9l-.2-.1-2.5.7.7-2.4-.2-.3C5.8 14.4 5.5 13.2 5.5 12c0-3.6 2.9-6.5 6.5-6.5 1.7 0 3.4.7 4.6 1.9 1.2 1.2 1.9 2.9 1.9 4.6 0 3.6-3 6.5-6.5 6.5z"/></svg></div>
+          <div><div class="cc-name">Main Line</div><div class="cc-num">+94 71 607 9550</div></div>
+        </a>
+        <a class="cta-contact-card" href="https://wa.me/94765276196" target="_blank" rel="noopener">
+          <div class="cc-avatar">Y</div>
+          <div><div class="cc-name">Yashod</div><div class="cc-num">+94 76 527 6196</div></div>
+        </a>
+        <a class="cta-contact-card" href="https://wa.me/94773530502" target="_blank" rel="noopener">
+          <div class="cc-avatar">Y</div>
+          <div><div class="cc-name">Yumeth</div><div class="cc-num">+94 77 353 0502</div></div>
+        </a>
+        <a class="cta-contact-card" href="https://wa.me/94776203314" target="_blank" rel="noopener">
+          <div class="cc-avatar">R</div>
+          <div><div class="cc-name">Ranod</div><div class="cc-num">+94 77 620 3314</div></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="images/diago-mark.jpeg" alt="Diago Designers">
+        <p>A four-year-old creative studio covering video, design, web and motion — powered end to end by Adobe and Blender.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <a href="#categories">Video Editing</a>
+        <a href="#categories">Logo Designing</a>
+        <a href="#categories">Web Design</a>
+        <a href="#categories">Motion Design</a>
+        <a href="#categories">3D &amp; Blender</a>
+      </div>
+      <div class="footer-col">
+        <h4>Studio</h4>
+        <a href="#toolkit">Toolkit</a>
+        <a href="#team">Team</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#portfolio">Portfolio</a>
+        <a href="#about">About</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <a href="https://wa.me/94716079550" target="_blank" rel="noopener" style="color:var(--green);">Main Line — +94 71 607 9550</a>
+        <a href="https://wa.me/94765276196" target="_blank" rel="noopener">Yashod — +94 76 527 6196</a>
+        <a href="https://wa.me/94773530502" target="_blank" rel="noopener">Yumeth — +94 77 353 0502</a>
+        <a href="https://wa.me/94776203314" target="_blank" rel="noopener">Ranod — +94 77 620 3314</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2026 TheDiagoDesigners. All rights reserved.</div>
+      <div class="footer-social">
+        <a href="#" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+        <a href="#" aria-label="Facebook"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></a>
+        <a href="#" aria-label="TikTok"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12a4 4 0 104 4V4a5 5 0 005 5"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // scroll reveal
+  const revealEls = document.querySelectorAll('[data-reveal]');
+  if('IntersectionObserver' in window && revealEls.length){
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+    revealEls.forEach(el => revealObserver.observe(el));
+  } else {
+    revealEls.forEach(el => el.classList.add('is-visible'));
+  }
+
+  // mobile nav
+  const burger = document.getElementById('burger');
+  const mobileNav = document.getElementById('mobileNav');
+  burger.addEventListener('click', () => mobileNav.classList.toggle('open'));
+  mobileNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileNav.classList.remove('open')));
+
+  // color-invert effect on packages + editing categories (tap/click toggle, in addition to CSS :hover)
+  const invertEls = document.querySelectorAll('.price-card, .cat-row');
+  invertEls.forEach(el => {
+    el.addEventListener('click', (e) => {
+      // don't hijack the actual CTA / whatsapp links inside price cards
+      if(e.target.closest('a')) return;
+      const wasOn = el.classList.contains('is-inverted');
+      invertEls.forEach(other => other.classList.remove('is-inverted'));
+      if(!wasOn) el.classList.add('is-inverted');
+    });
+  });
+  document.addEventListener('click', (e) => {
+    if(!e.target.closest('.price-card') && !e.target.closest('.cat-row')){
+      invertEls.forEach(el => el.classList.remove('is-inverted'));
+    }
+  });
+
+  // portfolio upload (in-memory, session only)
+  const fileInput = document.getElementById('fileInput');
+  const grid = document.getElementById('portfolioGrid');
+  const emptyState = document.getElementById('portfolioEmpty');
+  let items = [];
+
+  function render(){
+    grid.querySelectorAll('.portfolio-item').forEach(el => el.remove());
+    if(items.length === 0){
+      emptyState.style.display = 'block';
+      return;
+    }
+    emptyState.style.display = 'none';
+    items.forEach((src, i) => {
+      const div = document.createElement('div');
+      div.className = 'portfolio-item';
+      div.innerHTML = `
+        <img src="${src}" alt="Portfolio piece ${i+1}">
+        <div class="p-overlay"><span>Project ${String(i+1).padStart(2,'0')}</span></div>
+        <button class="remove-x" data-idx="${i}" aria-label="Remove">✕</button>
+      `;
+      grid.appendChild(div);
+    });
+    grid.querySelectorAll('.remove-x').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const idx = parseInt(btn.dataset.idx);
+        items.splice(idx, 1);
+        render();
+      });
+    });
+  }
+
+  fileInput.addEventListener('change', (e) => {
+    const files = Array.from(e.target.files);
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        items.push(ev.target.result);
+        render();
+      };
+      reader.readAsDataURL(file);
+    });
+    fileInput.value = '';
+  });
+
+  render();
+</script>
+
+</body>
+</html>
